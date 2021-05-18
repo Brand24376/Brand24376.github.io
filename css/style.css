@@ -1,0 +1,79 @@
+div {
+  border: 1px solid blue;
+  background-color: #000000;
+  margin: 5px;
+  padding: 5px;
+}
+
+#content {
+  border: 2px solid black;
+  width: 69%;
+  margin: auto;
+  background-color: blue;
+}
+
+#headerBox {}
+
+.linksBox,
+  {
+  color: white;
+}
+
+/*Combine Selectors */
+.linksbox,
+.textbox {
+  border-radiud: 20px;
+}
+
+/* Selector for all textBoxes */
+.textBox {
+  overflow: auto;
+}
+
+/* Selector for only images inside of textBoxes */
+.textBox img {
+  width: 25%;
+  clear: both;
+}
+
+.f-left {
+  float: left;
+}
+
+.f-right {
+  float: right;
+}
+
+a {
+  color: #ff0000;
+}
+
+a:visited {
+  color: #ff0000;
+}
+
+a:hover {
+  color: #ff00f7;
+}
+
+h1 {
+  color: #00ffe1;
+}
+
+h2 {
+  color: #039dfc;
+}
+
+p {
+  color: #44ff00;
+}
+
+body {
+  background-color: black;
+}
+
+@media (max-width: 600px) {
+  #content {
+    width: 100%;
+  }
+}
