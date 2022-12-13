@@ -1,6 +1,6 @@
 div {
   border: 1px solid blue;
-  background-color: #000000;
+  background-color: #1b1b1c;
   margin: 5px;
   padding: 5px;
 }
@@ -14,15 +14,14 @@ div {
 
 #headerBox {}
 
-.linksBox,
-  {
+.linksBox {
   color: white;
 }
 
 /*Combine Selectors */
 .linksbox,
 .textbox {
-  border-radiud: 20px;
+  border-radius: 20px;
 }
 
 /* Selector for all textBoxes */
@@ -69,7 +68,7 @@ p {
 }
 
 body {
-  background-color: black;
+  background-color: #1b1b1c;
 }
 
 @media (max-width: 600px) {
