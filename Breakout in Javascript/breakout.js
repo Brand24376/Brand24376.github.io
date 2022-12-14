@@ -350,3 +350,45 @@ function volumeUp() {
     };
 };
 initSounds();
+
+// Controller Support
+var direction = 0
+window.addEventListener('gamepadconnected', (event) => {
+    // Update Controller
+    const update = () => {
+        //Only read the first controller
+        const cont = navigator.getGamepads()[0];
+        if (cont.axes[0] >= 0.3) { //Right
+            paddle.x += paddle.dx;
+            if (paddle.x + paddle.width > canvas.width) {
+                paddle.x = canvas.width - paddle.width;
+            };
+        }
+        if (cont.axes[0] <= -0.3) { //Left
+            paddle.x -= paddle.dx;
+            if (paddle.x < 0) {
+                paddle.x = 0;
+            };
+        }
+        if (cont.buttons[9].pressed) {
+            play();
+        }
+        if (game.on && cont.buttons[0].pressed) {
+            game.music = !game.music;
+            game.music ? sounds.music.play() : sounds.music.pause();
+        }
+        if (game.on && cont.buttons[1].pressed) {
+            game.sfx = !game.sfx;
+        }
+        if (game.on && cont.buttons[4].pressed) {
+            volumeDown();
+        }
+        if (game.on && cont.buttons[5].pressed) {
+            volumeUp();
+        }
+        //This will loop the update every "animation frame"
+        requestAnimationFrame(update);
+    }; //End Update Controller
+    //Kick off the loop
+    update();
+});
