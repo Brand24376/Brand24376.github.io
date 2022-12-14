@@ -6,22 +6,10 @@ div {
 }
 
 #content {
-  border: 2px solid black;
+  border: 5px solid black;
   width: 69%;
   margin: auto;
   background-color: blue;
-}
-
-#headerBox {}
-
-.linksBox {
-  color: white;
-}
-
-/*Combine Selectors */
-.linksbox,
-.textbox {
-  border-radius: 20px;
 }
 
 /* Selector for all textBoxes */
@@ -33,14 +21,6 @@ div {
 .textBox img {
   width: 25%;
   clear: both;
-}
-
-.f-left {
-  float: left;
-}
-
-.f-right {
-  float: right;
 }
 
 a {
@@ -57,10 +37,6 @@ a:hover {
 
 h1 {
   color: #00ffe1;
-}
-
-h2 {
-  color: #039dfc;
 }
 
 p {
