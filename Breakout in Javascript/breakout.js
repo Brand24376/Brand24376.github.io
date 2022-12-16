@@ -2,7 +2,6 @@ const canvas = document.getElementById('breakout');
 const ctx = canvas.getContext('2d');
 document.addEventListener('keydown', keyDownHandler);
 document.addEventListener('keyup', keyUpHandler);
-// document.addEventListener("touchmove", touchMoveHandler);
 
 const sounds = {
     ballLost: new Audio('./sounds/ball-lost.mp3'),
@@ -407,7 +406,6 @@ window.addEventListener('gamepadconnected', (event) => {
 
 // Touch Support
 document.addEventListener("touchmove", touchMoveHandler, false);
-
 function touchMoveHandler(event) {
     var relativeX = event.touches[0].clientX - canvas.getBoundingClientRect().left;
     if (relativeX > 0 && relativeX < canvas.width) {
