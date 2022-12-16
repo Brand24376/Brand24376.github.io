@@ -354,10 +354,10 @@ initSounds();
 // Mouse Hover Support
 document.addEventListener("mousemove", mouseMoveHandler);
 function mouseMoveHandler(e) {
-    const mouseX = e.clientX - canvas.offsetLeft;    
+    const mouseX = e.clientX - canvas.offsetLeft;
     const isInsideCourt = () => mouseX > 0 && mouseX < canvas.width;
 
-    if(isInsideCourt()) {
+    if (isInsideCourt()) {
         paddle.x = mouseX - paddle.width / 2;
     }
 };
@@ -410,5 +410,18 @@ function touchMoveHandler(event) {
     var relativeX = event.touches[0].clientX - canvas.getBoundingClientRect().left;
     if (relativeX > 0 && relativeX < canvas.width) {
         paddle.x = relativeX - paddle.width / 2;
+    }
+};
+// Mute Buttons for Touch Supported Devices
+// Also works for devices with Cursors
+function muteMusic() {
+    if (game.on) {
+        game.music = !game.music;
+        game.music ? sounds.music.play() : sounds.music.pause();
+    }
+};
+function muteSFX() {
+    if (game.on) {
+        game.sfx = !game.sfx;
     }
 };
