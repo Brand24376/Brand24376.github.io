@@ -352,6 +352,17 @@ function volumeUp() {
 };
 initSounds();
 
+// Mouse Hover Support
+document.addEventListener("mousemove", mouseMoveHandler);
+function mouseMoveHandler(e) {
+    const mouseX = e.clientX - canvas.offsetLeft;    
+    const isInsideCourt = () => mouseX > 0 && mouseX < canvas.width;
+
+    if(isInsideCourt()) {
+        paddle.x = mouseX - paddle.width / 2;
+    }
+};
+
 // Controller Support
 var direction = 0
 window.addEventListener('gamepadconnected', (event) => {
