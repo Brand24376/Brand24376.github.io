@@ -381,6 +381,7 @@ window.addEventListener('gamepadconnected', (event) => {
                 paddle.x = 0;
             };
         }
+        // Make the button only work when the game is not on.
         if (cont.buttons[9].pressed) {
             play();
         }
