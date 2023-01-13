@@ -1,0 +1,509 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projectile Dodging Game</title>
+</head>
+<canvas id="game-canvas"></canvas>
+<style>
+    #game-canvas {
+        border: 5px solid white;
+        background-color: black;
+    }
+
+    #start-button {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 110px;
+        height: 25px;
+        font-weight: bold;
+        font-family: Arial;
+        font-size: 14.3px;
+    }
+
+    #restart-button {
+        position: absolute;
+        left: 47.5%;
+        top: 63.5%;
+        transform: translate(-50%, -50%);
+        width: 110px;
+        height: 25px;
+        font-weight: bold;
+        font-family: Arial;
+        font-size: 14.3px;
+    }
+
+    body {
+        overflow: hidden;
+        background-image: linear-gradient(180deg,
+                hsl(0deg 0% 0%) 0%,
+                hsl(0deg 100% 7%) 47%,
+                hsl(358deg 79% 15%) 67%,
+                hsl(358deg 86% 25%) 81%,
+                hsl(0deg 88% 34%) 91%,
+                hsl(0deg 84% 34%) 100%);
+        text-align: center;
+    }
+</style>
+<audio id="coin-audio" src="sfx/mixkit-game-coin-touch-3217.wav"></audio>
+<audio id="gameover-audio" src="sfx/Surprise Blue Lobster Meme Sound Effect.mp3"></audio>
+
+<body>
+    <button id="start-button">Start Game</button>
+    <button id="restart-button" style="display: none;">Restart Game</button>
+    <script>
+        // setup canvas
+        var canvas = document.getElementById("game-canvas");
+        var ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth / 1.5;
+        canvas.height = window.innerHeight - 25;
+        var gameOver = false;
+        var gameStarted = false;
+        var spawnDownInterval = 1000; // interval between spawning downward projectiles in milliseconds
+        var spawnUpInterval = 1000; // interval between spawning upward projectiles in milliseconds
+        var spawnIntervalDecrement = 0.5; // amount to decrement the spawn interval each time the game loop runs
+        var nextProjectileDownTime = Date.now() + spawnDownInterval;
+        var nextProjectileUpTime = Date.now() + spawnDownInterval;
+
+        // get the buttons
+        var startButton = document.getElementById("start-button");
+        var restartButton = document.getElementById("restart-button");
+
+        // add an event listener to the buttons
+        startButton.addEventListener("click", startGame);
+        restartButton.addEventListener("click", restartGame);
+
+        // background music
+        var backgroundMusic = new Audio("sfx/Dancing Polish Cow But Only The Best Part.mp3");
+        backgroundMusic.loop = true; // make the audio play again once it finishes
+
+        // get the button
+        var startButton = document.getElementById("start-button");
+
+        // add an event listener to the button
+        startButton.addEventListener("click", startGame);
+
+        // function to start the game
+        function startGame() {
+            gameStarted = true;
+            startButton.style.display = "none"; // hide the start button
+            backgroundMusic.play(); // start playing the background music
+            gameLoop(); // start the game loop
+        }
+
+        if (!gameStarted) {
+            backgroundMusic.pause();
+        }
+
+        // function to reset the game
+        function resetGame() {
+            // reset game state
+            gameOver = false;
+            // reset player position
+            player.x = canvas.width / 2;
+            player.y = canvas.height - 50;
+            // clear the canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            projectilesDown = [];
+            projectilesUp = [];
+            coins = []; // clear the coins array
+            startTime = 0;
+            score = 0;
+            spawnDownInterval = 1000;
+            spawnUpInterval = 1000;
+            // reset background music
+            backgroundMusic.currentTime = 0;
+            backgroundMusic.play();
+            var gameoverAudio = document.getElementById("gameover-audio");
+            gameoverAudio.currentTime = 100;
+            var coinAudio = document.getElementById("coin-audio");
+            coinAudio.currentTime = 100;
+
+        }
+
+        // function to restart the game
+        function restartGame() {
+            resetGame();
+            restartButton.style.display = "none";
+            startGame();
+        }
+
+        // gameover image
+        var gameoverImg = new Image();
+        gameoverImg.src = "images/blueLobster.png";
+        gameoverImg.addEventListener("load", function () {
+        });
+
+        // timer variable
+        var startTime;
+
+        // score counter
+        var score = 0;
+
+        // coin object
+        var coin = {
+            x: 0,
+            y: 0,
+            width: 20,
+            height: 20,
+            color: "yellow"
+        };
+
+        // array to store coins
+        var coins = [];
+
+        // function to create coin every 10 seconds
+        if (!gameOver) {
+            setInterval(function () {
+                coin.x = Math.random() * (canvas.width - coin.width);
+                coin.y = (canvas.height / 5) + Math.random() * (canvas.height / 1.5 - coin.height);
+                coins.push({ ...coin });
+            }, 5000);
+        }
+
+        // player object
+        var player = {
+            x: canvas.width / 2,
+            y: canvas.height - 50,
+            width: 20,
+            height: 20,
+            speed: 8,
+            upPressed: false,
+            downPressed: false,
+            leftPressed: false,
+            rightPressed: false,
+            color: "blue"
+        };
+
+        // array to store downward projectiles
+        var projectilesDown = [];
+
+        // function to create downward projectiles
+        function createProjectileDown() {
+            var projectileDownSize = Math.floor(Math.random() * 15) + 10;
+            var projectileDown = {
+                x: Math.random() * canvas.width,
+                y: 0,
+                width: projectileDownSize,
+                height: projectileDownSize,
+                color: "red"
+            };
+            projectilesDown.push(projectileDown);
+            nextProjectileDownTime = Date.now() + spawnDownInterval;
+        }
+
+        // update downward projectiles position
+        function updateProjectilesDown() {
+            for (var i = 0; i < projectilesDown.length; i++) {
+                projectilesDown[i].y += 5; // move projectiles down by 5 pixels
+                if (projectilesDown[i].y > canvas.height) {
+                    projectilesDown.splice(i, 1); // remove projectiles when they go off screen
+                }
+            }
+        }
+
+        // check for collision between player and downward projectiles
+        function checkDownCollision() {
+            for (var i = 0; i < projectilesDown.length; i++) {
+                if (
+                    player.x < projectilesDown[i].x + projectilesDown[i].width &&
+                    player.x + player.width > projectilesDown[i].x &&
+                    player.y < projectilesDown[i].y + projectilesDown[i].height &&
+                    player.y + player.height > projectilesDown[i].y
+                ) {
+                    gameOver = true;
+                    var gameoverAudio = document.getElementById("gameover-audio");
+                    gameoverAudio.currentTime = 0;
+                    gameoverAudio.play();
+                }
+            }
+        }
+
+        // array to store upward projectiles
+        var projectilesUp = [];
+
+        // function to create downward projectiles
+        function createProjectileUp() {
+            var projectileUpSize = Math.floor(Math.random() * 15) + 10;
+            var projectileUp = {
+                x: Math.random() * canvas.width,
+                y: canvas.height,
+                width: projectileUpSize,
+                height: projectileUpSize,
+                color: "red"
+            };
+            projectilesUp.push(projectileUp);
+            nextProjectileUpTime = Date.now() + spawnUpInterval;
+        }
+
+        // update upward projectiles position
+        function updateProjectilesUp() {
+            for (var i = 0; i < projectilesUp.length; i++) {
+                projectilesUp[i].y -= 5; // move projectiles down by 5 pixels
+                if (projectilesUp[i].y < 0) {
+                    projectilesUp.splice(i, 1); // remove projectiles when they go off screen
+                }
+            }
+        }
+
+        // check for collision between player and upward projectiles
+        function checkUpCollision() {
+            for (var i = 0; i < projectilesUp.length; i++) {
+                if (
+                    player.x < projectilesUp[i].x + projectilesUp[i].width &&
+                    player.x + player.width > projectilesUp[i].x &&
+                    player.y < projectilesUp[i].y + projectilesUp[i].height &&
+                    player.y + player.height > projectilesUp[i].y
+                ) {
+                    gameOver = true;
+                    var gameoverAudio = document.getElementById("gameover-audio");
+                    gameoverAudio.currentTime = 0;
+                    gameoverAudio.play();
+                }
+            }
+        }
+
+        // move player based on user input
+        function inputs() {
+            if (player.upPressed) {
+                if (player.y > 0) {
+                    player.y = player.y - player.speed;
+                }
+            }
+            if (player.downPressed) {
+                if (player.y + player.height < canvas.height) {
+                    player.y = player.y + player.speed;
+                }
+            }
+            if (player.leftPressed) {
+                if (player.x > 0) {
+                    player.x = player.x - player.speed;
+                }
+            }
+            if (player.rightPressed) {
+                if (player.x + player.width < canvas.width) {
+                    player.x = player.x + player.speed;
+                }
+            }
+        }
+
+        document.body.addEventListener("keydown", keyDown);
+        document.body.addEventListener("keyup", keyUp);
+
+        function keyDown(event) {
+            //up
+            if (event.keyCode == 38) {
+                player.upPressed = true;
+            }
+
+            //down
+            if (event.keyCode == 40) {
+                player.downPressed = true;
+            }
+            //left
+            if (event.keyCode == 37) {
+                player.leftPressed = true;
+            }
+
+            //right
+            if (event.keyCode == 39) {
+                player.rightPressed = true;
+            }
+        }
+
+        function keyUp(event) {
+            //up
+            if (event.keyCode == 38) {
+                player.upPressed = false;
+            }
+
+            //down
+            if (event.keyCode == 40) {
+                player.downPressed = false;
+            }
+            //left
+            if (event.keyCode == 37) {
+                player.leftPressed = false;
+            }
+
+            //right
+            if (event.keyCode == 39) {
+                player.rightPressed = false;
+            }
+        }
+
+        // game rules
+        if (!gameStarted) {
+            ctx.fillStyle = "white";
+            ctx.font = "30px Arial";
+            ctx.textAlign = "left";
+            var text = "Rules: You play as a blue square dodging red square projectiles while trying to collect yellow square coins. Projectiles start spawning from the top to bottom and more start spawning over time until it reaches a certain rate. After 60 seconds, projectiles start spawning from the bottom to the top at the same rate. How to Play: Use arrow keys or thumb stick to move. Press the start button to start the game.";
+            var textWidth = ctx.measureText(text).width;
+            var x = 5;
+            var y = 30;
+            var lineHeight = 30;
+            var lines = text.split(" ");
+            var line = "";
+            for (var n = 0; n < lines.length; n++) {
+                var testLine = line + lines[n] + " ";
+                var testWidth = ctx.measureText(testLine).width;
+                if (testWidth > canvas.width) {
+                    ctx.fillText(line, x, y);
+                    line = lines[n] + " ";
+                    y += lineHeight;
+                } else {
+                    line = testLine;
+                }
+            }
+            ctx.fillText(line, x, y);
+        }
+
+        // main game loop
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // clear canvas
+
+            // check for collision with coins
+            for (var i = 0; i < coins.length; i++) {
+                if (
+                    player.x < coins[i].x + coins[i].width &&
+                    player.x + player.width > coins[i].x &&
+                    player.y < coins[i].y + coins[i].height &&
+                    player.y + player.height > coins[i].y
+                ) {
+                    coins.splice(i, 1); // remove coin
+                    score++; // increase score
+                    var coinAudio = document.getElementById("coin-audio");
+                    coinAudio.currentTime = 0;
+                    coinAudio.play();
+                }
+            }
+            // check if start time is not set
+            if (!startTime) {
+                startTime = Date.now();
+            }
+            if (!gameOver) {
+                // calculate elapsed time
+                var elapsedTime = Date.now() - startTime;
+                var seconds = Math.floor(elapsedTime / 1000);
+            }
+
+            // spawn downward projectiles
+            if (Date.now() >= nextProjectileDownTime) {
+                createProjectileDown();
+            }
+            if (spawnDownInterval > 40) {
+                spawnDownInterval -= spawnIntervalDecrement; //decrement the spawnInterval
+            }
+
+            // spawn upward projectiles
+            if (Date.now() >= nextProjectileUpTime) {
+                if (seconds > 60) {
+                    createProjectileUp();
+                }
+            }
+            if (seconds > 60) {
+                if (spawnUpInterval > 40) {
+                    spawnUpInterval -= spawnIntervalDecrement; //decrement the spawnInterval
+                }
+            }
+
+            updateProjectilesDown(); // update downward projectiles position
+            updateProjectilesUp(); // update upward projectiles position
+            checkDownCollision(); // check for downward projectiles collision
+            checkUpCollision(); // check for upward projectiles collision
+            inputs(); // check for inputs
+
+            if (gameOver) {
+                backgroundMusic.pause();
+                restartButton.style.display = "block";
+                ctx.fillStyle = "white";
+                ctx.font = "30px Arial";
+                ctx.drawImage(gameoverImg, 0, 0, canvas.width, canvas.height);
+                ctx.fillText("Game Over!", canvas.width / 2 - 100, canvas.height / 2);
+                ctx.fillText("Time: " + seconds + "s", canvas.width / 2 - 100, canvas.height / 2 + 50);
+                ctx.fillText("Score: " + score, canvas.width / 2 - 100, canvas.height / 2 + 100);
+                return;
+            } else {
+                restartButton.style.display = "none";
+                // draw elapsed time
+                ctx.fillStyle = "white";
+                ctx.font = "20px Arial";
+                ctx.fillText("Time: " + seconds + "s", canvas.width - 120, 30);
+            }
+            // draw player
+            ctx.fillStyle = player.color;
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+
+            // draw coins
+            for (var i = 0; i < coins.length; i++) {
+                ctx.fillStyle = coins[i].color;
+                ctx.fillRect(coins[i].x, coins[i].y, coins[i].width, coins[i].height);
+            }
+
+            // draw downward projectiles
+            for (var i = 0; i < projectilesDown.length; i++) {
+                ctx.fillStyle = projectilesDown[i].color;
+                ctx.fillRect(projectilesDown[i].x, projectilesDown[i].y, projectilesDown[i].width, projectilesDown[i].height);
+            }
+
+            // draw upward projectiles
+            for (var i = 0; i < projectilesUp.length; i++) {
+                ctx.fillStyle = projectilesUp[i].color;
+                ctx.fillRect(projectilesUp[i].x, projectilesUp[i].y, projectilesUp[i].width, projectilesUp[i].height);
+            }
+
+            // draw score
+            ctx.fillStyle = "white";
+            ctx.font = "20px Arial";
+            ctx.fillText("Score: " + score, canvas.width - 120, 60);
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Controller Support
+        var direction = 0
+        window.addEventListener('gamepadconnected', (event) => {
+            // Update Controller
+            const update = () => {
+                //Only read the first controller
+                const cont = navigator.getGamepads()[0];
+                if (cont.axes[1] >= 0.3) { // Down
+                    if (player.y + player.height < canvas.height) {
+                        player.y = player.y + player.speed;
+                    }
+                }
+                if (cont.axes[1] <= -0.3) { // Up
+                    if (player.y > 0) {
+                        player.y = player.y - player.speed;
+                    }
+                }
+                if (cont.axes[0] >= 0.3) { // Right
+                    if (player.x + player.width < canvas.width) {
+                        player.x = player.x + player.speed;
+                    };
+                }
+                if (cont.axes[0] <= -0.3) { // Left
+                    if (player.x > 0) {
+                        player.x = player.x - player.speed;
+                    }
+                }
+                if (cont.buttons[9].pressed && !gameStarted) {
+                    restartGame();
+                }
+                if (cont.buttons[9].pressed && gameOver) {
+                    restartGame();
+                }
+                //This will loop the update every "animation frame"
+                requestAnimationFrame(update);
+            }; //End Update Controller
+            //Kick off the loop
+            update();
+        });
+    </script>
+</body>
+
+</html>
