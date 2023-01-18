@@ -1,5 +1,7 @@
-const canvas = document.getElementById('breakout');
-const ctx = canvas.getContext('2d');
+var canvas = document.getElementById('breakout');
+var ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth / 2;
+canvas.height = window.innerHeight / 1.5;
 document.addEventListener('keydown', keyDownHandler);
 document.addEventListener('keyup', keyUpHandler);
 
@@ -64,6 +66,7 @@ function play() {
     setTimeout(() => game.music && sounds.music.play(), 2000);
 
     animate();
+    document.getElementById("play-button").style.visibility = 'hidden';
 };
 function onImageLoad(e) {
     resetGame();
@@ -327,6 +330,7 @@ function gameOver() {
     ctx.font = '50px ArcadeClassic';
     ctx.fillStyle = 'red';
     ctx.fillText('GAME OVER', canvas.width / 2 - 100, canvas.height / 2);
+    document.getElementById("play-button").style.visibility = 'visible';
 };
 
 function initSounds() {
@@ -382,7 +386,7 @@ window.addEventListener('gamepadconnected', (event) => {
             };
         }
         // Make the button only work when the game is not on.
-        if (cont.buttons[9].pressed) {
+        if (cont.buttons[9].pressed && !game.on) {
             play();
         }
         if (game.on && cont.buttons[0].pressed) {
