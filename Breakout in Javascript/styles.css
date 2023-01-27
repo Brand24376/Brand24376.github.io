@@ -21,6 +21,7 @@
 
 #breakout {
   border: 4px solid black;
+  touch-action: none;
 }
 
 body {

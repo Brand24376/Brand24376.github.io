@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projectile Dodging Game</title>
+    <link rel="icon" href="Images/redSquare.png" type="image/png">
 </head>
 <canvas id="game-canvas"></canvas>
 <style>
@@ -89,6 +90,7 @@
 
         // function to start the game
         function startGame() {
+            resetGame();
             gameStarted = true;
             startButton.style.display = "none"; // hide the start button
             backgroundMusic.play(); // start playing the background music
@@ -127,7 +129,6 @@
 
         // function to restart the game
         function restartGame() {
-            resetGame();
             restartButton.style.display = "none";
             startGame();
         }
@@ -160,7 +161,7 @@
         // array to store coins
         var coins = [];
 
-        // function to create coin every 10 seconds
+        // function to create coin every few seconds
         if (!gameOver) {
             setInterval(function () {
                 coin.x = Math.random() * (canvas.width - coin.width);
