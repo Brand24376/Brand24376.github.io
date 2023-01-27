@@ -133,8 +133,12 @@
         }
 
         // gameover image
+        const numOfImgs = 1;
         var gameoverImg = new Image();
-        gameoverImg.src = "images/blueLobster.png";
+        var ranNum = Math.floor(Math.random() * numOfImgs + 1);
+        if (ranNum == 1) {
+            gameoverImg.src = "Images/blueLobster.png";
+        }
         gameoverImg.addEventListener("load", function () {
         });
 
