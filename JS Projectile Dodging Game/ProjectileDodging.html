@@ -12,6 +12,7 @@
     #game-canvas {
         border: 5px solid white;
         background-color: black;
+        text-align: center;
     }
 
     #start-button {
@@ -51,7 +52,8 @@
     }
 </style>
 <audio id="coin-audio" src="sfx/mixkit-game-coin-touch-3217.wav"></audio>
-<audio id="gameover-audio" src="sfx/Surprise Blue Lobster Meme Sound Effect.mp3"></audio>
+<audio id="gameover-audio" src=""></audio>
+<video id="gameover-video" src=""></video>
 
 <body>
     <button id="start-button">Start Game</button>
@@ -133,15 +135,21 @@
             startGame();
         }
 
-        // gameover image
-        const numOfImgs = 1;
+        // gameover image and audio
+        const numOfGameOvers = 2;
+        var fileType = '';
         var gameoverImg = new Image();
-        var ranNum = Math.floor(Math.random() * numOfImgs + 1);
+        var ranNum = Math.floor(Math.random() * numOfGameOvers + 1);
+        console.log(ranNum);
         if (ranNum == 1) {
             gameoverImg.src = "Images/blueLobster.png";
+            document.getElementById("gameover-audio").src = 'sfx/Surprise Blue Lobster Meme Sound Effect.mp3';
+            fileType = 'image';
         }
-        gameoverImg.addEventListener("load", function () {
-        });
+        if (ranNum == 2) {
+            document.getElementById('gameover-video').src = 'sfx/OneDay.mp4';
+            fileType = 'video'
+        }
 
         // timer variable
         var startTime;
@@ -223,7 +231,9 @@
                     gameOver = true;
                     var gameoverAudio = document.getElementById("gameover-audio");
                     gameoverAudio.currentTime = 0;
-                    gameoverAudio.play();
+                    if (fileType == 'image') {
+                        gameoverAudio.play();
+                    }
                 }
             }
         }
@@ -427,7 +437,22 @@
                 restartButton.style.display = "block";
                 ctx.fillStyle = "white";
                 ctx.font = "30px Arial";
-                ctx.drawImage(gameoverImg, 0, 0, canvas.width, canvas.height);
+                if (fileType == 'image') {
+                    gameoverImg.addEventListener("load", function () {
+                    });
+                    ctx.drawImage(gameoverImg, 0, 0, canvas.width, canvas.height);
+                }
+                if (fileType == 'video') {
+                    document.getElementById('gameover-video').addEventListener('play', function () {
+                        var $this = this; //cache
+                        (function loop() {
+                            if (!$this.paused && !$this.ended) {
+                                ctx.drawImage($this, 0, 0);
+                                setTimeout(loop, 1000 / 30); // drawing at 30fps
+                            }
+                        })();
+                    }, 0);
+                }
                 ctx.fillText("Game Over!", canvas.width / 2 - 100, canvas.height / 2);
                 ctx.fillText("Time: " + seconds + "s", canvas.width / 2 - 100, canvas.height / 2 + 50);
                 ctx.fillText("Score: " + score, canvas.width / 2 - 100, canvas.height / 2 + 100);
