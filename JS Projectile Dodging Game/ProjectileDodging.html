@@ -149,7 +149,9 @@
             var video = document.createElement("video");
             video.id = "gameover-video";
             video.src = "sfx/OneDay.mp4";
-            video.style.zIndex = '2';
+            video.style.zIndex = '0';
+            video.style.position = 'absolute';
+            video.style.left = '0%';
             fileType = 'video';
         }
 
