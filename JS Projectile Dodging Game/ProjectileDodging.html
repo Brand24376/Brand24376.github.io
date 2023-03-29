@@ -91,6 +91,28 @@
 
         // function to start the game
         function startGame() {
+            ranNum = Math.floor(Math.random() * numOfGameOvers + 1);
+            console.log(ranNum);
+            if (ranNum == 1) {
+                gameoverImg.src = "Images/blueLobster.png";
+                document.getElementById("gameover-audio").src = 'sfx/Surprise Blue Lobster Meme Sound Effect.mp3';
+                fileType = 'image';
+            }
+            if (ranNum == 2) {
+                gameoverImg.src = "Images/dripGoku.png";
+                document.getElementById("gameover-audio").src = 'sfx/the first note of ultra instinct.mp3';
+                fileType = 'image';
+            }
+            if (ranNum == 3) {
+                gameoverImg.src = "Images/beckham.png";
+                document.getElementById("gameover-audio").src = 'sfx/FNAF 2 Hallway Ambience Meme Sound Effect.mp3';
+                fileType = 'image';
+            }
+            if (ranNum == 4) {
+                gameoverImg.src = "Images/whatTheHelllllllllllll.png";
+                document.getElementById("gameover-audio").src = 'sfx/WHAT THE HELLLLLLL sound effect.mp3';
+                fileType = 'image';
+            }
             resetGame();
             gameStarted = true;
             startButton.style.display = "none"; // hide the start button
@@ -128,32 +150,17 @@
 
         }
 
+        // gameover image and audio
+        const numOfGameOvers = 4;
+        var fileType = '';
+        var gameoverImg = new Image();
+        var ranNum;
+
         // function to restart the game
         function restartGame() {
             restartButton.style.display = "none";
             startGame();
-        }
-
-        // gameover image and audio
-        const numOfGameOvers = 2;
-        var fileType = '';
-        var gameoverImg = new Image();
-        var ranNum = Math.floor(Math.random() * numOfGameOvers + 1);
-        console.log(ranNum);
-        if (ranNum == 1) {
-            gameoverImg.src = "Images/blueLobster.png";
-            document.getElementById("gameover-audio").src = 'sfx/Surprise Blue Lobster Meme Sound Effect.mp3';
-            fileType = 'image';
-        }
-        if (ranNum == 2) {
-            var video = document.createElement("video");
-            video.id = "gameover-video";
-            video.src = "sfx/OneDay.mp4";
-            video.style.zIndex = '0';
-            video.style.position = 'absolute';
-            video.style.left = '0%';
-            fileType = 'video';
-        }
+        };
 
         // timer variable
         var startTime;
@@ -315,42 +322,42 @@
 
         function keyDown(event) {
             //up
-            if (event.keyCode == 38) {
+            if (event.keyCode == 38 || event.keyCode == 87) {
                 player.upPressed = true;
             }
 
             //down
-            if (event.keyCode == 40) {
+            if (event.keyCode == 40 || event.keyCode == 83) {
                 player.downPressed = true;
             }
             //left
-            if (event.keyCode == 37) {
+            if (event.keyCode == 37 || event.keyCode == 65) {
                 player.leftPressed = true;
             }
 
             //right
-            if (event.keyCode == 39) {
+            if (event.keyCode == 39 || event.keyCode == 68) {
                 player.rightPressed = true;
             }
         }
 
         function keyUp(event) {
             //up
-            if (event.keyCode == 38) {
+            if (event.keyCode == 38 || event.keyCode == 87) {
                 player.upPressed = false;
             }
 
             //down
-            if (event.keyCode == 40) {
+            if (event.keyCode == 40 || event.keyCode == 83) {
                 player.downPressed = false;
             }
             //left
-            if (event.keyCode == 37) {
+            if (event.keyCode == 37 || event.keyCode == 65) {
                 player.leftPressed = false;
             }
 
             //right
-            if (event.keyCode == 39) {
+            if (event.keyCode == 39 || event.keyCode == 68) {
                 player.rightPressed = false;
             }
         }
@@ -447,15 +454,12 @@
                     ctx.drawImage(gameoverImg, 0, 0, canvas.width, canvas.height);
                 }
                 if (fileType == 'video') {
-                    // Get the video to properly be drawn by the canvas
-                    // Still isn't working despite the code
-                    document.body.appendChild(video);
-                    video.addEventListener('play', function () {
-                        (function loop() {
-                            ctx.drawImage(video.src, 0, 0, canvas.width, canvas.height);
-                            requestAnimationFrame(loop, 1000 / 30); // drawing at 30fps
-                        })();
-                    }, 0);
+                    // Have a way to get videos to play.
+                    // Ideas Include:
+                    // Playing the video itself on canvas
+                    // playing the video on html
+                    // drawing a gif of the video with the audio in the background synced up
+                    // If none of these work, I will draw each individual frame of the video on canvas with the audio synched up
                 }
                 ctx.fillText("Game Over!", canvas.width / 2 - 100, canvas.height / 2);
                 ctx.fillText("Time: " + seconds + "s", canvas.width / 2 - 100, canvas.height / 2 + 50);
