@@ -2,6 +2,8 @@ import './style.css';
 
 import * as THREE from 'three';
 
+import './three.module.js'
+
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(
