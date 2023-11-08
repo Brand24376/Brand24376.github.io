@@ -1,54 +1,84 @@
-div {
-  border: 1px solid blue;
-  background-color: #1b1b1c;
-  margin: 5px;
-  padding: 5px;
+@import url("https://use.typekit.net/jmk3xov.css");
+
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
-#content {
-  border: 5px solid black;
-  width: 69%;
-  margin: auto;
-  background-color: blue;
+
+:root {
+  --dark-bg: rgba(15, 15, 15, 0.95);
+  --spacing: 350px;
+
+  font-family: brandon-grotesque, sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
-/* Selector for all textBoxes */
-.textBox {
-  overflow: auto;
+
+main {
+  width: 100vw;
+  color: white;
+  z-index: 99;
+  position: absolute;
+  width: 100%;
+  margin: 0px auto;
+  padding: 120px 0px;
+
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
 }
 
-/* Selector for only images inside of textBoxes */
-.textBox img {
-  width: 25%;
-  clear: both;
+h1,
+h2,
+h3,
+blockquote {
+  font-family: elevon, sans-serif;
+  font-weight: 700;
+  font-style: normal;
 }
 
-a {
-  color: #ff0000;
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
-a:visited {
-  color: #ff0000;
+
+
+header {
+  background: var(--dark-bg);
+  grid-column: 2 / span 5;
+  font-size: 2.5rem;
+  padding: 2rem;
+  margin-bottom: var(--spacing);
 }
 
-a:hover {
-  color: #ff00f7;
+section {
+  grid-column: 2 / 8;
+  padding: 1rem;
+  background: var(--dark-bg);
+  font-size: 1.25rem;
+  line-height: 1.5;
+  margin-bottom: var(--spacing);
 }
 
-h1 {
-  color: #00ffe1;
+blockquote {
+  margin: 0;
+  padding: 0;
+  grid-column: 2 / span 9;
+  margin-bottom: var(--spacing);
 }
 
-p {
-  color: #44ff00;
+blockquote p {
+  color: black;
+  background-color: white;
+  font-size: 4rem;
+  display: inline;
+  line-height: 1;
 }
 
-body {
-  background-color: #1b1b1c;
-}
-
-@media (max-width: 600px) {
-  #content {
-    width: 100%;
-  }
+.left {
+  grid-column: 6 / 12;
 }
