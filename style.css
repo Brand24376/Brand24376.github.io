@@ -1,84 +1,48 @@
-@import url("https://use.typekit.net/jmk3xov.css");
-
 canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
 }
 
-
-:root {
-  --dark-bg: rgba(15, 15, 15, 0.95);
-  --spacing: 350px;
-
-  font-family: brandon-grotesque, sans-serif;
-  font-weight: 400;
-  font-style: normal;
+body {
+    font-size: 24px;
+    color: white;
 }
 
-
-main {
-  width: 100vw;
-  color: white;
-  z-index: 99;
-  position: absolute;
-  width: 100%;
-  margin: 0px auto;
-  padding: 120px 0px;
-
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
+a:link {
+    color: green;
 }
 
-h1,
-h2,
-h3,
-blockquote {
-  font-family: elevon, sans-serif;
-  font-weight: 700;
-  font-style: normal;
+a:hover {
+    color: blue;
 }
 
-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
+#content {
+    float: right;
+    width: 50%;
 }
 
-
-
-header {
-  background: var(--dark-bg);
-  grid-column: 2 / span 5;
-  font-size: 2.5rem;
-  padding: 2rem;
-  margin-bottom: var(--spacing);
+h1 {
+    font-weight: bold;
+    text-align: center;
 }
 
-section {
-  grid-column: 2 / 8;
-  padding: 1rem;
-  background: var(--dark-bg);
-  font-size: 1.25rem;
-  line-height: 1.5;
-  margin-bottom: var(--spacing);
+h2 {
+    font-weight: bold;
+    text-align: center;
 }
 
-blockquote {
-  margin: 0;
-  padding: 0;
-  grid-column: 2 / span 9;
-  margin-bottom: var(--spacing);
+h3 {
+    font-weight: bold;
+    text-align: left;
 }
 
-blockquote p {
-  color: black;
-  background-color: white;
-  font-size: 4rem;
-  display: inline;
-  line-height: 1;
-}
+@media screen and (max-width: 600px) {
 
-.left {
-  grid-column: 6 / 12;
+    #content {
+        float: none;
+        width: 100%;
+    }
+
 }
