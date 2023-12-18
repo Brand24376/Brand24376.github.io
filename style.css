@@ -7,7 +7,7 @@ canvas {
 
 body {
     font-size: 24px;
-    color: white;
+    color: rgb(0, 0, 0);
 }
 
 a:link {
@@ -36,6 +36,12 @@ h2 {
 h3 {
     font-weight: bold;
     text-align: left;
+}
+
+p {
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 5px;
+    border-color: rgba(255, 255, 255, 1);
 }
 
 @media screen and (max-width: 600px) {
