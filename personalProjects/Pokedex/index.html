@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokemon App</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <!-- create a separate container for the search bar and button -->
+    <div id="searchContainer">
+        <!-- the search bar and button will be added here -->
+    </div>
+
+    <!-- create a separate container for the Pokemon list -->
+    <div id="pokemonContainer">
+        <!-- the Pokemon list will be displayed here -->
+    </div>
+</body>
+
+<script>
+    var nextUrl = 'https://pokeapi.co/api/v2/pokemon'; // initial URL
+    var prevUrl = null; // store the previous URL
+
+    // get the search container
+    var searchContainer = document.getElementById('searchContainer');
+
+    // create a search bar
+    var searchBar = document.createElement('input');
+    searchBar.type = 'text';
+    searchBar.placeholder = 'Enter Pokemon number';
+    searchContainer.appendChild(searchBar); // add the search bar to the search container
+
+    // create a search button
+    var searchButton = document.createElement('button');
+    searchButton.textContent = 'Search';
+    searchButton.addEventListener('click', function () {
+        var pokemonNumber = searchBar.value;
+        var pokemonUrl = 'https://pokeapi.co/api/v2/pokemon/' + pokemonNumber;
+        displayPokemonDetails(pokemonUrl);
+    });
+    searchContainer.appendChild(searchButton); // add the search button to the search container
+
+    function getPokemon(url) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.send();
+        xhr.onload = function () {
+            if (xhr.status != 200) {
+                alert(`Error ${xhr.status}: ${xhr.statusText}`);
+            } else {
+                var data = JSON.parse(xhr.response);
+                var pokemonList = data.results;
+                prevUrl = data.previous;
+                nextUrl = data.next;
+
+                // get the Pokemon container
+                var pokemonContainer = document.getElementById('pokemonContainer');
+
+                // clear the current list
+                pokemonContainer.innerHTML = '';
+
+                // display the list of pokemon on the page
+                pokemonList.forEach(function (pokemon) {
+                    var p = document.createElement('p');
+                    p.textContent = pokemon.name;
+                    p.addEventListener('click', function () {
+                        displayPokemonDetails(pokemon.url);
+                    });
+
+                    // fetch the pokemon's image
+                    var imgXhr = new XMLHttpRequest();
+                    imgXhr.open('GET', pokemon.url, true);
+                    imgXhr.send();
+                    imgXhr.onload = function () {
+                        if (imgXhr.status == 200) {
+                            var imgData = JSON.parse(imgXhr.response);
+                            var img = document.createElement('img');
+                            img.src = imgData.sprites.front_default;
+                            p.appendChild(img);
+                        };
+                    };
+
+                    document.body.appendChild(p);
+                });
+
+                // add the "Back" button
+                if (prevUrl) {
+                    var backButton = document.createElement('button');
+                    backButton.textContent = 'Back';
+                    backButton.addEventListener('click', function () {
+                        getPokemon(prevUrl);
+                    });
+                    document.body.appendChild(backButton);
+                };
+
+                // add the "Next" button
+                var nextButton = document.createElement('button');
+                nextButton.textContent = 'Next';
+                nextButton.addEventListener('click', function () {
+                    getPokemon(nextUrl);
+                });
+                document.body.appendChild(nextButton);
+            };
+        };
+    };
+
+    function displayPokemonDetails(url) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.send();
+        xhr.onload = function () {
+            if (xhr.status != 200) {
+                alert(`Error ${xhr.status}: ${xhr.statusText}`);
+            } else {
+                var data = JSON.parse(xhr.response);
+
+                // create an image element
+                var img = document.createElement('img');
+                img.src = data.sprites.front_default; // set the image source to the Pokemon's image
+                document.body.appendChild(img); // append the image to the body
+
+                alert('Name: ' + data.name + '\nHeight: ' + data.height + '\nWeight: ' + data.weight + '\nAbilities: ' + data.abilities.map(a => a.ability.name).join(', '));
+            };
+        };
+    };
+
+    // fetch the initial page
+    getPokemon(nextUrl);
+</script>
+
+</html>
